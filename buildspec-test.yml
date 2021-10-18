@@ -6,6 +6,7 @@ phases:
     - echo "pre_build"
   build:
     commands:
+    - terraform version
     - terraform init
     - terraform apply -auto-approve
   post_build:
