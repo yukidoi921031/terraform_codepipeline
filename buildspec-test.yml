@@ -6,7 +6,8 @@ phases:
     - echo "pre_build"
   build:
     commands:
-    - echo "build"
+    - terraform init
+    - terraform plan
   post_build:
     commands:
     - echo "post_build"
