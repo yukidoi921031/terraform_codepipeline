@@ -30,6 +30,6 @@ module "apply" {
   repository_name = "terraform_codepipeline"
   repository_owner = "yukidoi921031"
   github_event = "pull_request"
-  webhook_jsonpath = "$.action"
-  webhook_match_equal = "closed"
+  webhook_jsonpath = "$.pull_request.merged"
+  webhook_match_equal = true
 }
