@@ -19,7 +19,7 @@ resource "aws_codebuild_project" "codebuild" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "${path.root}/${var.buildspec_file_name}"
+    buildspec = "_infra/tf_dryrun/${var.buildspec_file_name}"
   }
 
   artifacts {
