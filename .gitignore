@@ -1,1 +1,4 @@
 .idea
+_infra/tf_dryrun/dev/.terraform
+_infra/tf_dryrun/dev/.terraform.lock.hcl
+_infra/tf_dryrun/dev/terraform.exe

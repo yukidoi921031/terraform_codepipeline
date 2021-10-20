@@ -6,8 +6,6 @@ variable "terraform_image_tag" {}
 variable "codepipeline_role_name" {}
 variable "artifact_bucket_name" {}
 variable "codepipeline_name" {}
-variable "remote_state_bucket" {}
-variable "remote_state_bucket_key" {}
 variable "repository_name" {}
 variable "repository_owner" {}
 variable "github_event" {}
