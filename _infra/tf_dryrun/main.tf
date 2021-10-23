@@ -92,6 +92,7 @@ resource "aws_codepipeline" "codepipeline" {
         ConnectionArn    = aws_codestarconnections_connection.codestar.arn
         FullRepositoryId = "${var.repository_owner}/${var.repository_name}"
         BranchName       = "main"
+        DetectChanges    = "false"
       }
     }
   }
