@@ -1,9 +1,12 @@
 version: 0.2
 
+env:
+  variables:
+    ENV: "${env}"
 phases:
   pre_build:
     commands:
-    - cd _infra/aws
+    - cd _infra/aws/$ENV
     - terraform init
     - terraform fmt -check
   build:
