@@ -14,10 +14,10 @@ module "codebuild_role" {
 }
 
 data "template_file" "buildspec" {
-  template = file("${var.buildspec_file_name}.yml")
+  template = file("${path.module}/${var.buildspec_file_name}.yml")
 
   vars = {
-    ENV = var.environment
+    env = var.environment
   }
 }
 
@@ -95,6 +95,7 @@ resource "aws_codepipeline" "codepipeline" {
       provider         = "CodeStarSourceConnection"
       version          = 1
       output_artifacts = ["Source"]
+      namespace        = "SourceVariables"
 
       configuration = {
         ConnectionArn    = aws_codestarconnections_connection.codestar.arn
@@ -119,6 +120,7 @@ resource "aws_codepipeline" "codepipeline" {
 
       configuration = {
         ProjectName = aws_codebuild_project.codebuild.id
+        "EnvironmentVariables": "[{\"name\":\"Branch\",\"value\":\"#{SourceVariables.BranchName}\",\"type\":\"PLAINTEXT\"}]",
       }
     }
   }

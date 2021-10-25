@@ -6,6 +6,7 @@ env:
 phases:
   pre_build:
     commands:
+    - echo $Branch
     - cd _infra/aws/$ENV
     - terraform init
     - terraform fmt -check

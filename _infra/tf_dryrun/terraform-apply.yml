@@ -6,9 +6,9 @@ env:
 phases:
   pre_build:
     commands:
-    - cd _infra/aws
+    - cd _infra/aws/$ENV
     - terraform init
     - terraform fmt -check
   build:
     commands:
-    - terraform apply
+    - terraform apply -auto-approve
