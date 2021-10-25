@@ -26,8 +26,9 @@ resource "aws_codebuild_project" "codebuild" {
   service_role = module.codebuild_role.iam_role_arn
 
   source {
-    type      = "CODEPIPELINE"
-    buildspec = data.template_file.buildspec.rendered
+    type            = "CODEPIPELINE"
+    buildspec       = data.template_file.buildspec.rendered
+    git_clone_depth = 0
   }
 
   artifacts {
@@ -37,7 +38,7 @@ resource "aws_codebuild_project" "codebuild" {
   environment {
     type            = "LINUX_CONTAINER"
     compute_type    = "BUILD_GENERAL1_SMALL"
-    image           = "hashicorp/terraform:${var.terraform_image_tag}"
+    image           = "public.ecr.aws/hashicorp/terraform:latest"
     privileged_mode = true
   }
 }
@@ -120,7 +121,7 @@ resource "aws_codepipeline" "codepipeline" {
 
       configuration = {
         ProjectName = aws_codebuild_project.codebuild.id
-        "EnvironmentVariables": "[{\"name\":\"Branch\",\"value\":\"#{SourceVariables.BranchName}\",\"type\":\"PLAINTEXT\"}]",
+        "EnvironmentVariables" : "[{\"name\":\"Branch\",\"value\":\"#{SourceVariables.BranchName}\",\"type\":\"PLAINTEXT\"}]",
       }
     }
   }
