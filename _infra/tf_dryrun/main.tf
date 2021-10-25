@@ -13,13 +13,21 @@ module "codebuild_role" {
   policy     = data.aws_iam_policy.codebuild.policy
 }
 
+data "template_file" "buildspec" {
+  template = file("${var.buildspec_file_name}.yml")
+
+  vars = {
+    ENV = var.environment
+  }
+}
+
 resource "aws_codebuild_project" "codebuild" {
   name         = var.codebuild_name
   service_role = module.codebuild_role.iam_role_arn
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "_infra/tf_dryrun/${var.buildspec_file_name}"
+    buildspec = data.template_file.buildspec.rendered
   }
 
   artifacts {

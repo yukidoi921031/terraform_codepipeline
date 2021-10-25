@@ -11,3 +11,4 @@ variable "repository_owner" {}
 variable "github_event" {}
 variable "webhook_jsonpath" {}
 variable "webhook_match_equal" {}
+variable "environment" {}
