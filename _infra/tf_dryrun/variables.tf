@@ -4,3 +4,4 @@ variable "codebuild_name" {}
 variable "buildspec_file_name" {}
 variable "repository_url" {}
 variable "environment" {}
+variable "webhook_filter_pattern" {}
