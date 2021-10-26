@@ -58,10 +58,5 @@ resource "aws_codebuild_webhook" "example" {
       type    = "EVENT"
       pattern = "PUSH"
     }
-
-    filter {
-      type    = "HEAD_REF"
-      pattern = "master"
-    }
   }
 }
