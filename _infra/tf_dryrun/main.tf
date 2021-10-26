@@ -56,7 +56,7 @@ resource "aws_codebuild_webhook" "example" {
   filter_group {
     filter {
       type    = "EVENT"
-      pattern = "PUSH"
+      pattern = var.webhook_filter_pattern
     }
   }
 }
