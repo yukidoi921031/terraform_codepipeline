@@ -21,18 +21,25 @@ data "template_file" "buildspec" {
   }
 }
 
+resource "aws_codebuild_source_credential" "example" {
+  auth_type   = "PERSONAL_ACCESS_TOKEN"
+  server_type = "GITHUB"
+  token       = data.aws_ssm_parameter.github_token.value
+}
+
 resource "aws_codebuild_project" "codebuild" {
   name         = var.codebuild_name
   service_role = module.codebuild_role.iam_role_arn
 
   source {
-    type            = "CODEPIPELINE"
+    type            = "GITHUB"
     buildspec       = data.template_file.buildspec.rendered
+    location        = "https://github.com/yukidoi921031/terraform_codepipeline.git"
     git_clone_depth = 0
   }
 
   artifacts {
-    type = "CODEPIPELINE"
+    type = "NO_ARTIFACTS"
   }
 
   environment {
@@ -43,130 +50,18 @@ resource "aws_codebuild_project" "codebuild" {
   }
 }
 
-data "aws_iam_policy_document" "codepipeline" {
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
+resource "aws_codebuild_webhook" "example" {
+  project_name = aws_codebuild_project.codebuild.name
+  build_type   = "BUILD"
+  filter_group {
+    filter {
+      type    = "EVENT"
+      pattern = "PUSH"
+    }
 
-    actions = [
-      "s3:*",
-      "codebuild:BatchGetBuilds",
-      "codebuild:StartBuild",
-      "iam:PassRole",
-      "codestar-connections:UseConnection",
-    ]
-  }
-}
-
-module "codepipeline_role" {
-  source     = "./modules/iam_role"
-  name       = var.codepipeline_role_name
-  identifier = "codepipeline.amazonaws.com"
-  policy     = data.aws_iam_policy_document.codepipeline.json
-}
-
-resource "aws_s3_bucket" "artifact" {
-  bucket = var.artifact_bucket_name
-
-  lifecycle_rule {
-    enabled = true
-
-    expiration {
-      days = "180"
+    filter {
+      type    = "HEAD_REF"
+      pattern = "master"
     }
   }
-}
-
-resource "aws_codestarconnections_connection" "codestar" {
-  name          = "github-connection"
-  provider_type = "GitHub"
-}
-
-resource "aws_codepipeline" "codepipeline" {
-  name     = var.codepipeline_name
-  role_arn = module.codepipeline_role.iam_role_arn
-
-  stage {
-    name = "Source"
-
-    action {
-      name             = "Source"
-      category         = "Source"
-      owner            = "AWS"
-      provider         = "CodeStarSourceConnection"
-      version          = 1
-      output_artifacts = ["Source"]
-      namespace        = "SourceVariables"
-
-
-      configuration = {
-        ConnectionArn        = aws_codestarconnections_connection.codestar.arn
-        FullRepositoryId     = "${var.repository_owner}/${var.repository_name}"
-        BranchName           = "main"
-        OutputArtifactFormat = "CODEBUILD_CLONE_REF"
-        DetectChanges        = "false"
-      }
-    }
-  }
-
-  stage {
-    name = "Build"
-
-    action {
-      name             = "Build"
-      category         = "Build"
-      owner            = "AWS"
-      provider         = "CodeBuild"
-      version          = 1
-      input_artifacts  = ["Source"]
-      output_artifacts = ["Build"]
-
-      configuration = {
-        ProjectName = aws_codebuild_project.codebuild.id
-        "EnvironmentVariables" : "[{\"name\":\"Branch\",\"value\":\"#{SourceVariables.CommitId}\",\"type\":\"PLAINTEXT\"}]",
-      }
-    }
-  }
-
-  artifact_store {
-    location = aws_s3_bucket.artifact.id
-    type     = "S3"
-  }
-}
-
-resource "random_id" "sample" {
-  keepers = {
-    codepipeline_name = aws_codepipeline.codepipeline.name
-  }
-
-  byte_length = 32
-}
-
-resource "aws_codepipeline_webhook" "terraform_plan" {
-  name            = var.codepipeline_name
-  target_pipeline = aws_codepipeline.codepipeline.name
-  target_action   = "Source"
-  authentication  = "GITHUB_HMAC"
-
-  authentication_configuration {
-    secret_token = random_id.sample.hex
-  }
-
-  filter {
-    json_path    = var.webhook_jsonpath
-    match_equals = var.webhook_match_equal
-  }
-}
-
-resource "github_repository_webhook" "github_webhook" {
-  repository = var.repository_name
-
-  configuration {
-    url          = aws_codepipeline_webhook.terraform_plan.url
-    secret       = random_id.sample.hex
-    content_type = "json"
-    insecure_ssl = false
-  }
-
-  events = [var.github_event]
 }
