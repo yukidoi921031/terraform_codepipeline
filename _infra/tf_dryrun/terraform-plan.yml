@@ -7,6 +7,11 @@ phases:
   pre_build:
     commands:
     - git branch
+    - echo $CODEBUILD_WEBHOOK_TRIGGER
+    - echo $CODEBUILD_WEBHOOK_HEAD_REF
+    - echo $CODEBUILD_WEBHOOK_EVENT
+    - echo $CODEBUILD_WEBHOOK_BASE_REF
+    - echo $CODEBUILD_SOURCE_VERSION
     - cd _infra/aws/$ENV
     - terraform init
     - terraform fmt -check
