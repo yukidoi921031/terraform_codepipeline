@@ -123,7 +123,7 @@ resource "aws_codepipeline" "codepipeline" {
 
       configuration = {
         ProjectName = aws_codebuild_project.codebuild.id
-        "EnvironmentVariables" : "[{\"name\":\"Branch\",\"value\":\"#{SourceVariables.BranchName}\",\"type\":\"PLAINTEXT\"}]",
+        "EnvironmentVariables" : "[{\"name\":\"Branch\",\"value\":\"#{SourceVariables.CommitId}\",\"type\":\"PLAINTEXT\"}]",
       }
     }
   }
