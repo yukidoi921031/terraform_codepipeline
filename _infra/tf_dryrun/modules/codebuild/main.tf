@@ -9,13 +9,13 @@ module "codebuild_role" {
   policy     = data.aws_iam_policy.codebuild.policy
 }
 
-data "template_file" "buildspec" {
-  template = file("${path.module}/${var.buildspec_file_name}.yml")
-
-  vars = {
-    env = var.environment
-  }
-}
+#data "template_file" "buildspec" {
+#  template = file("${path.module}/${var.buildspec_file_name}.yml")
+#
+#  vars = {
+#    env = var.environment
+#  }
+#}
 
 resource "aws_codebuild_source_credential" "example" {
   auth_type   = "PERSONAL_ACCESS_TOKEN"
@@ -29,7 +29,7 @@ resource "aws_codebuild_project" "codebuild" {
 
   source {
     type      = "GITHUB"
-    buildspec = data.template_file.buildspec.rendered
+    buildspec = file("${path.module}/${var.buildspec_file_name}.yml")
     location  = var.repository_url
   }
 
@@ -42,6 +42,11 @@ resource "aws_codebuild_project" "codebuild" {
     compute_type    = "BUILD_GENERAL1_SMALL"
     image           = "hashicorp/terraform:${var.tf_version}"
     privileged_mode = true
+
+    environment_variable {
+      name  = "ENVIRONMENT"
+      value = var.environment
+    }
   }
 }
 
