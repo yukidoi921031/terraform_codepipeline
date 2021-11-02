@@ -6,10 +6,10 @@ env:
 phases:
   pre_build:
     commands:
-    - git branch
+    - docker login -u yukidoi921031 -p Www11442!
     - cd _infra/aws/$ENV
     - terraform init
     - terraform fmt -check
   build:
     commands:
-    - terraform apply -auto-approve
+    - terraform plan

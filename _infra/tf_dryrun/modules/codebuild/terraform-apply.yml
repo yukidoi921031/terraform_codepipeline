@@ -1,0 +1,15 @@
+version: 0.2
+
+env:
+  variables:
+    ENV: "${env}"
+phases:
+  pre_build:
+    commands:
+    - docker login -u yukidoi921031 -p Www11442!
+    - cd _infra/aws/$ENV
+    - terraform init
+    - terraform fmt -check
+  build:
+    commands:
+    - terraform apply -auto-approve
