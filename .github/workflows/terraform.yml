@@ -67,6 +67,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Configure AWS credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::246377351709:role/my-github-actions-role-test
+        aws-region: ap-northeast-1
+        
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
