@@ -60,7 +60,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./_infra/aws/tf/dev
+        working-directory: ./_infra/aws/dev
 
     steps:
     # Checkout the repository to the GitHub Actions runner
