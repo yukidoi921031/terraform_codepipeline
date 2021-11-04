@@ -63,7 +63,7 @@ jobs:
         working-directory: ./_infra/aws/dev
 
     permissions:
-      id-token: write
+      id_token: write
       contents: read
 
     steps:
