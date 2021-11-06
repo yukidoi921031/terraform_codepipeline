@@ -70,6 +70,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: echo
+      run: echo $ACTIONS_ID_TOKEN_REQUEST_URL
+      
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@master
       with:
