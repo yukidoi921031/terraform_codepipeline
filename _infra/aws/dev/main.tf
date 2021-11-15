@@ -1,7 +1,3 @@
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
-}
-
-resource "aws_vpc" "sub" {
-  cidr_block = "10.1.0.0/16"
+module "test" {
+  source = "git@github.com:yukidoi921031/tf_module_test.git"
 }
