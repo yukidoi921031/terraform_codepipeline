@@ -29,7 +29,7 @@ jobs:
         id: list_jobs
         with:
           script: |
-            let res = github.rest.actions.listJobsForWorkflowRun({
+            let res = await github.rest.actions.listJobsForWorkflowRun({
               owner: context.repo.owner,
               repo: context.repo.repo,
               run_id: ${{ github.run_id }}
