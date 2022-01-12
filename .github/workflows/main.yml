@@ -29,8 +29,8 @@ jobs:
       - uses: actions/github-script@v5
         with:
           script: |
-            github.rest.actions.getJobForWorkflowRun({
+            github.rest.actions.listJobsForWorkflowRun({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              job_id: checkout
+              run_id: ${{ github.run_id }}
             })
