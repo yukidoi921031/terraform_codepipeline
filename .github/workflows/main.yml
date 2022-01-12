@@ -34,4 +34,4 @@ jobs:
               repo: context.repo.repo,
               run_id: ${{ github.run_id }}
             })
-            echo ${{ result }}
+            console.log(result)
