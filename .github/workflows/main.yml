@@ -37,3 +37,18 @@ jobs:
             return res["data"]["jobs"][0]["html_url"]
       - name: Get result
         run: echo "${{steps.list_jobs.outputs.result}}"
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.14.11
+          
+  terraform:
+    needs: build
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: terraform init
+        run: terraform init
